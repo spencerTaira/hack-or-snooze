@@ -50,3 +50,21 @@ function putStoriesOnPage() {
 
   $allStoriesList.show();
 }
+
+/** Gets info from submit form and calls methods to add story to API and
+ * update DOM */
+
+function getSubmitFormData(evt) {
+  console.debug('getSubmitFormData')
+  evt.preventDefault();
+  const author = $('#author-name').val();
+  const title = $('#title-name').val();
+  const url = $('#url-name').val();
+  const storyMetaInfo = {author, title, url};
+  storyList.addStory(currentUser, storyMetaInfo);
+  $('#author-name').val('');
+  $('#title-name').val('');
+  $('#url-name').val('');
+}
+
+$submitForm.on('submit', getSubmitFormData);
