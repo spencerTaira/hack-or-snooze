@@ -33,6 +33,7 @@
 <nav>
   <div class="navbar-brand">
     <a class="nav-link" href="#" id="nav-all">Hack or Snooze</a>
+    <a class="nav-link" href="#" id="nav-submit">Submit</a>
   </div>
   <div class="nav-right">
     <a class="nav-link" href="#" id="nav-login">login/signup</a>
@@ -41,11 +42,16 @@
   </div>
 </nav>
 
+
 <!-- Submit story form -->
 <section class="submit-story-forms-container container">
-  <form id="submit-story-form" class="submit-story-form hidden">
-    <label for="author-name">author</label>
-    <input id="author-name">
+  <form id="submit-story-form" class="submit-story-form hidden"> <!-- TODO: make this hidden -->
+    <label for="author-name">Author</label>
+    <input id="author-name" placeholder="author name">
+    <label for="title-name">Title</label>
+    <input id="title-name" placeholder="title name">
+    <label for="url-name">URL:</label>
+    <input id="url-name" placeholder="url name">
   </form>
 </section>
 
@@ -99,7 +105,7 @@
 
 <!-- Library JS & our JS -->
 <script src="https://unpkg.com/jquery"></script>
-<script src="https://unpkg.com/axios/dist/axios.js"></script>
+<script src="https://unpkg.com/axios@1.0.0/dist/axios.js"></script>
 
 <script src="js/models.js"></script>
 <script src="js/main.js"></script>
