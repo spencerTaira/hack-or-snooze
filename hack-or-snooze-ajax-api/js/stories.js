@@ -25,6 +25,10 @@ function generateStoryMarkup(story) {
   const hostName = story.getHostName();
   return $(`
       <li id="${story.storyId}">
+        <span class="star">
+          <i class="bi bi-star">
+          </i>
+        </span>
         <a href="${story.url}" target="a_blank" class="story-link">
           ${story.title}
         </a>
@@ -57,14 +61,28 @@ function putStoriesOnPage() {
 function getSubmitFormData(evt) {
   console.debug('getSubmitFormData')
   evt.preventDefault();
-  const author = $('#author-name').val();
-  const title = $('#title-name').val();
-  const url = $('#url-name').val();
-  const storyMetaInfo = {author, title, url};
-  storyList.addStory(currentUser, storyMetaInfo);
-  $('#author-name').val('');
-  $('#title-name').val('');
-  $('#url-name').val('');
+  const author = $authorInput.val();
+  const title = $titleInput.val();
+  const url = $urlInput.val();
+  const storyFormData = {author, title, url};
+  storyList.addStory(currentUser, storyFormData);
+  $authorInput.val(''); //TODO: reset method
+  $titleInput.val('');
+  $urlInput.val('');
 }
 
 $submitForm.on('submit', getSubmitFormData);
+
+/**Puts favorite stories on favorite "page" */
+function putFavoritesOnPage() {
+  console.debug("putFavoritesOnPage");
+  $allStoriesList.empty();
+
+  for (let story of currentUser.favorites) {
+    const $story = generateStoryMarkup(story);
+    $allStoriesList.append($story);
+  }
+
+  $allStoriesList.show();
+}
+

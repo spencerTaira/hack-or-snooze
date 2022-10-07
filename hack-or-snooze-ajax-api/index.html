@@ -33,7 +33,8 @@
 <nav>
   <div class="navbar-brand">
     <a class="nav-link" href="#" id="nav-all">Hack or Snooze</a>
-    <a class="nav-link" href="#" id="nav-submit">Submit</a>
+    <a class="nav-link hidden" href="#" id="nav-submit">Submit</a>
+    <a class="nav-link hidden" href="#" id="nav-favorites">Favorites</a>
   </div>
   <div class="nav-right">
     <a class="nav-link" href="#" id="nav-login">login/signup</a>
@@ -43,15 +44,15 @@
 </nav>
 
 
-<!-- Submit story form -->
+<!-- Submit story form TODO: adjust author-name ID-->
 <section class="submit-story-forms-container container">
   <form id="submit-story-form" class="submit-story-form hidden">
-    <label for="author-name">Author</label>
-    <input id="author-name" placeholder="author name">
-    <label for="title-name">Title</label>
-    <input id="title-name" placeholder="title name">
-    <label for="url-name">URL:</label>
-    <input id="url-name" placeholder="url name">
+    <label for="author-name-input">Author</label>
+    <input id="author-name-input" placeholder="author name">
+    <label for="title-name-input">Title</label>
+    <input id="title-name-input" placeholder="title name">
+    <label for="url-name-input">URL:</label>
+    <input id="url-name-input" placeholder="url name">
     <input type="submit" value="Submit">
   </form>
 </section>

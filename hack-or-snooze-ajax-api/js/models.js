@@ -2,6 +2,7 @@
 
 const BASE_URL = "https://hack-or-snooze-v3.herokuapp.com";
 const ADD_STORY_URL = "https://hack-or-snooze-v3.herokuapp.com/stories/";
+const FAVORITES_URL = "https://hack-or-snooze-v3.herokuapp.com/users/"
 
 /******************************************************************************
  * Story: a single story in the system
@@ -26,7 +27,10 @@ class Story {
 
   getHostName() {
     // UNIMPLEMENTED: complete this function!
-    return "hostname.com";
+    // if (this.url === 'http://') return ""; //TODO: entered bad data. remove once I
+    // // figure out how to remove story from database
+    const domain = new URL(this.url);
+    return domain.hostname;
   }
 }
 
@@ -77,11 +81,21 @@ class StoryList {
   // async addStory( /* user, newStory */) {
   //   // UNIMPLEMENTED: complete this function!
   // }
-  async addStory(currentUser, newStory) {
-    const response = await axios.post(ADD_STORY_URL, {token: currentUser.loginToken, story: newStory});
-    const newAPIStory = new Story(response);
-    storyList.stories.push(newAPIStory);
-    return newAPIStory;
+  async addStory(currentUser, {title, author, url}) {
+    console.log('addStory');
+    const response = await axios.post(ADD_STORY_URL, {
+      token: currentUser.loginToken,
+      story: {
+        title,
+        author,
+        url,
+      },
+    });
+    const apiStoryData = new Story(response.data.story);
+    this.stories.unshift(apiStoryData);
+    const $story = generateStoryMarkup(apiStoryData);
+    $allStoriesList.prepend($story);
+    return apiStoryData;
   }
 }
 
@@ -200,4 +214,31 @@ class User {
       return null;
     }
   }
+
+  // /**Allows a user to favorite a story */
+  async addFavorite(story) {
+    console.log('addFavorite');
+    for (let i = 0; i < this.favorites.length; i++) {
+      if (story.storyId === this.favorites[i].storyId) { //TODO: make a function
+        console.log('this story is already favorited');
+        return;
+      }
+    }
+    const response = await axios.post(
+      `${FAVORITES_URL}${this.username}/favorites/${story.storyId}`,
+      {token: this.loginToken});
+    this.favorites.push(story);
+  }
+
+  // /**Allows a user to unfavorite a story */
+  async removeFavorite(story) {
+    console.log('removeFavorite');
+    let response = await axios.delete(
+      `${FAVORITES_URL}${this.username}/favorites/${story.storyId}`,
+      {data: {token: this.loginToken}});
+    const storyInd = this.favorites.findIndex(el => el === story)
+    if (storyInd === -1) console.log('this story does not exist in favorites');
+    this.favorites.splice(storyInd, 1);
+  }
 }
+

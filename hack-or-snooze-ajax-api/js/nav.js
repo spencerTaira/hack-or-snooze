@@ -32,13 +32,16 @@ $navLogin.on("click", navLoginClick);
 function updateNavOnLogin() {
   console.debug("updateNavOnLogin");
   $(".main-nav-links").show();
+  hidePageComponents();
+  putStoriesOnPage();
   $navLogin.hide();
   $navLogOut.show();
+  $navSubmit.show();
+  $navFavorites.show();
   $navUserProfile.text(`${currentUser.username}`).show();
 }
 
 
-$navSubmit.on('click', navSubmitClick);
 
 /** Show submit story form on click on "submit" */
 
@@ -47,4 +50,18 @@ function navSubmitClick(evt) {
   evt.preventDefault();
   hidePageComponents();
   $submitForm.show();
+  $allStoriesList.show();
 }
+
+$navSubmit.on('click', navSubmitClick);
+
+/**Update Dom with user Favorites */
+
+function navFavoritesClick(evt) {
+  console.debug('navFavoritesClick');
+  evt.preventDefault();
+  hidePageComponents();
+  putFavoritesOnPage();
+}
+
+$navFavorites.on('click', navFavoritesClick);
