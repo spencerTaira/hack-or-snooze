@@ -26,9 +26,6 @@ class Story {
   /** Parses hostname out of URL and returns it. */
 
   getHostName() {
-    // UNIMPLEMENTED: complete this function!
-    // if (this.url === 'http://') return ""; //TODO: entered bad data. remove once I
-    // // figure out how to remove story from database
     const domain = new URL(this.url);
     return domain.hostname;
   }
@@ -71,38 +68,6 @@ class StoryList {
     return new StoryList(stories);
   }
 
-  static async getAdditionalStories(limit, skip=25) {
-    const response = await axios({
-      url: `${BASE_URL}/stories`,
-      method: "GET",
-      params: {
-        skip: skip,
-        limit: limit,
-      }
-    });
-
-    const stories = response.data.stories.map(story => new Story(story));
-    // new code
-    console.log('stories', stories, 'favorites', currentUser.favorites);
-    const filteredStories = stories.filter(newStory => {
-      return currentUser.favorites.some(favStory => {
-        console.log('favStoryID', favStory, 'story', newStory);
-        return favStory.storyId !== newStory.storyId;
-      });
-    });
-    console.log('filteredStories', filteredStories);
-    console.log(limit);
-    if (filteredStories.length !== limit) {
-      console.log('another filter');
-      stories = [...filteredStories, ...this.getAdditionalStories(limit - filteredStories.length, ++skip)];
-    }
-
-    return stories;
-    // end new code
-
-    // build an instance of our own class using the new array of stories
-    // return new StoryList(stories);
-  }
   /** Adds story data to API, makes a Story instance, adds it to story list.
    * - user - the current instance of User who will post the story
    * - obj of {title, author, url}
@@ -249,9 +214,9 @@ class User {
 
   // /**Allows a user to favorite a story */
   async addFavorite(story) {
-    console.log('addFavorite');
+    console.debug('addFavorite');
     for (let i = 0; i < this.favorites.length; i++) {
-      if (story.storyId === this.favorites[i].storyId) { //TODO: make a function
+      if (story.storyId === this.favorites[i].storyId) {
         console.log('this story is already favorited');
         return;
       }
@@ -264,7 +229,7 @@ class User {
 
   // /**Allows a user to unfavorite a story */
   async removeFavorite(story) {
-    console.log('removeFavorite');
+    console.debug('removeFavorite');
     let response = await axios.delete(
       `${FAVORITES_URL}${this.username}/favorites/${story.storyId}`,
       {data: {token: this.loginToken}});

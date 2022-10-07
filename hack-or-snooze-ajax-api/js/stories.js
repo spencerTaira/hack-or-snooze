@@ -7,49 +7,7 @@ let storyList;
 
 async function getAndShowStoriesOnStart() {
   storyList = await StoryList.getStories();
-  /*make own function maybe */
-  /*
-  const unFavoriteStories = storyList.stories.filter(story => {
-    for (let favStory of currentUser.favorites) {
-      if (story.storyId === favStory.storyId) {
-        return false;
-      }
-    }
-    return true;
-  });
-
-  const numAddittionalStories = storyList.stories.length - unFavoriteStories.length;
-*/
-  /* Current problem:
-      I CAN remove existing favorites from initial storyList and update it
-      with the necessary amount of stories.
-      If someone favorites one of the new stories that was added in addition,
-      I CANNOT remove that one from the storyList
-        - thinking of using recursion
-        - not sure how to implement
-        - maybe put functionality of checking for matching favorites inside
-        getAdditionalStories
-        - that way I can recursively call it (will try after LUNCH)
-  */
-/*
-  //new code
-  if (numAddittionalStories !== 0) {
-    const additionalStoryList =
-      await StoryList.getAdditionalStories(numAddittionalStories);
-    storyList.stories = [...additionalStoryList, ...unFavoriteStories];
-  }
-*/
-  // if (numAddittionalStories !== 0) {
-  //   console.log('secondAxios');
-  //   const additionalStoryList = await StoryList.getAdditionalStories(numAddittionalStories);
-  //   console.log('new Story grabbed', additionalStoryList.stories);
-  //   additionalStoryList.stories = additionalStoryList.stories.concat(unFavoriteStories);
-  //   console.log('newStories', additionalStoryList.stories);
-  //   storyList = additionalStoryList;
-  // }
-
   $storiesLoadingMsg.remove();
-
   putStoriesOnPage();
 }
 
@@ -81,7 +39,8 @@ function generateStoryMarkup(story) {
 }
 
 /**
- * A render method to render HTML for an individual Story instance filled star
+ * A render method to render HTML for an individual Story that adds a filled
+ * star next to it
  * - story: an instance of Story
  *
  * Returns the markup for the story.
@@ -121,25 +80,17 @@ function putStoriesOnPage() {
         isFavStory = true;
       }
     }
-    console.log(isFavStory);
+
     if (isFavStory) {
-      console.log('favorite');
       $story = generateFavoritesStoryMarkup(story);
     } else {
-      console.log('notFav');
       $story = generateStoryMarkup(story);
     }
+
     $allStoriesList.append($story);
     isFavStory = false;
   }
   $allStoriesList.show();
-
-  /* filter through storyList.stories only returning stories that don't match
-  current favorites IDs
-  get difference in length between 25-unfavoritedList
-  send another getStories method but only calling for the difference in stories
-  append the unfavoritedList and new list together.*/
-
 }
 
 /** Gets info from submit form and calls methods to add story to API and
@@ -176,20 +127,12 @@ function putFavoritesOnPage() {
 /** Fills or unfills the star and calls favorite/unfavorite method */
 function favoritesStarClick(evt) {
   evt.preventDefault();
-
   $(this)
     .toggleClass('bi bi-star')
     .toggleClass('bi bi-star-fill');
-
   const selectedStoryID = $(this).closest('li').attr('id');
-
-/* TODO: make this a function specifically for storyList... will need another function
-for favorites tab or i can make a function that takes in an array either
-storyList or favoritesList*/
-
-
+  
   if ($(this).hasClass('bi bi-star-fill')) {
-    let selectedStory;
     for (let story of storyList.stories) {
       if (story.storyId === selectedStoryID) {
         currentUser.addFavorite(story);
