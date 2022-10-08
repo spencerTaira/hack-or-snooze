@@ -38,6 +38,7 @@ function updateNavOnLogin() {
   $navLogOut.show();
   $navSubmit.show();
   $navFavorites.show();
+  $navMyStories.show();
   $navUserProfile.text(`${currentUser.username}`).show();
 }
 

@@ -231,7 +231,7 @@ class User {
   */
   async removeFavorite(story) {
     console.debug('removeFavorite');
-    let response = await axios.delete(
+    await axios.delete(
       `${FAVORITES_URL}${this.username}/favorites/${story.storyId}`,
       {data: {token: this.loginToken}});
     const storyInd = this.favorites.findIndex(el => el.storyId === story.storyId)
