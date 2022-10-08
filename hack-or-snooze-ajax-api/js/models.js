@@ -88,11 +88,9 @@ class StoryList {
         url,
       },
     });
-    const apiStoryData = new Story(response.data.story);
-    this.stories.unshift(apiStoryData);
-    const $story = generateStoryMarkup(apiStoryData);
-    $allStoriesList.prepend($story);
-    return apiStoryData;
+    const newStory = new Story(response.data.story);
+    this.stories.unshift(newStory);
+    return newStory;
   }
 }
 
@@ -212,30 +210,38 @@ class User {
     }
   }
 
-  // /**Allows a user to favorite a story */
+  /**Allows a user to favorite a story
+   * Takes in a Story instance
+  */
   async addFavorite(story) {
     console.debug('addFavorite');
-    for (let i = 0; i < this.favorites.length; i++) {
-      if (story.storyId === this.favorites[i].storyId) {
-        console.log('this story is already favorited');
-        return;
-      }
+
+    if (this.favorites.find(favStory => favStory.storyId === story.storyId)) {
+      console.log('this story is already favorited');
     }
-    const response = await axios.post(
+
+    await axios.post(
       `${FAVORITES_URL}${this.username}/favorites/${story.storyId}`,
       {token: this.loginToken});
     this.favorites.push(story);
   }
 
-  // /**Allows a user to unfavorite a story */
+  /**Allows a user to unfavorite a story
+   * Takes in a Story instance
+  */
   async removeFavorite(story) {
     console.debug('removeFavorite');
     let response = await axios.delete(
       `${FAVORITES_URL}${this.username}/favorites/${story.storyId}`,
       {data: {token: this.loginToken}});
-    const storyInd = this.favorites.findIndex(el => el === story)
-    if (storyInd === -1) console.log('this story does not exist in favorites');
-    this.favorites.splice(storyInd, 1);
+    const storyInd = this.favorites.findIndex(el => el.storyId === story.storyId)
+    if (storyInd === -1) {
+      console.log('this story does not exist in favorites');
+    }
+    else {
+      this.favorites.splice(storyInd, 1);
+    }
+
   }
 }
 

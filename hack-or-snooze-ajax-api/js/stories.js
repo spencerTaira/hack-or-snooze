@@ -96,15 +96,17 @@ function putStoriesOnPage() {
 /** Gets info from submit form and calls methods to add story to API and
  * update DOM */
 
-function getSubmitFormData(evt) {
+async function getSubmitFormData(evt) {
   console.debug('getSubmitFormData')
   evt.preventDefault();
   const author = $authorInput.val();
   const title = $titleInput.val();
   const url = $urlInput.val();
   const storyFormData = {author, title, url};
-  storyList.addStory(currentUser, storyFormData);
-  $authorInput.val(''); //TODO: reset method
+  const newStory = await storyList.addStory(currentUser, storyFormData);
+  const $newStory = generateStoryMarkup(newStory);
+  $allStoriesList.prepend($newStory);
+  $authorInput.val('');
   $titleInput.val('');
   $urlInput.val('');
 }
@@ -125,28 +127,30 @@ function putFavoritesOnPage() {
 }
 
 /** Fills or unfills the star and calls favorite/unfavorite method */
-function favoritesStarClick(evt) {
+async function favoritesToggle(evt) {
   evt.preventDefault();
-  $(this)
-    .toggleClass('bi bi-star')
-    .toggleClass('bi bi-star-fill');
-  const selectedStoryID = $(this).closest('li').attr('id');
-  
-  if ($(this).hasClass('bi bi-star-fill')) {
+  const selectedStoryID = $(evt.target).closest('li').attr('id');
+
+  if ($(this).hasClass('bi bi-star')) {
     for (let story of storyList.stories) {
       if (story.storyId === selectedStoryID) {
-        currentUser.addFavorite(story);
-        return;
+        await currentUser.addFavorite(story); //TODO: think about re-favoriting
+        // on favorites page when story not in main story list
+        break;
       }
     }
   } else {
     for (let story of currentUser.favorites) {
       if (story.storyId === selectedStoryID) {
-        currentUser.removeFavorite(story);
-        return;
+        await currentUser.removeFavorite(story);
+        break;
       }
     }
   }
+
+  $(evt.target)
+  .toggleClass('bi bi-star')
+  .toggleClass('bi bi-star-fill');
 }
 
-$allStoriesList.on('click', 'i', favoritesStarClick);
+$allStoriesList.on('click', 'i', favoritesToggle);
